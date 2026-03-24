@@ -1,0 +1,49 @@
+version: "3.9"
+
+x-app-base: &app-template
+  build:
+    context: .
+    dockerfile: Dockerfile
+  environment:
+    - PYTHONDONTWRITEBYTECODE=1
+    - PYTHONUNBUFFERED=1
+  restart: unless-stopped
+  healthcheck:
+    test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read(); print('ok')"]
+    interval: 10s
+    timeout: 5s
+    retries: 5
+    start_period: 5s
+  networks:
+    - hostra
+
+services:
+  app:
+    <<: *app-template
+    ports:
+      - "8000:8000"
+  app2:
+    <<: *app-template
+    ports:
+      - "8001:8000"
+  app3:
+    <<: *app-template
+    ports:
+      - "8002:8000"
+  app4:
+    <<: *app-template
+    ports:
+      - "8003:8000"
+  app5:
+    <<: *app-template
+    ports:
+      - "8004:8000"
+  app6:
+    <<: *app-template
+    ports:
+      - "8005:8000"
+
+networks:
+  hostra:
+    external: true
+    name: hostra
